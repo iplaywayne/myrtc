@@ -2,6 +2,6 @@
 
 npm i - install package.json packages
 
-nodemon server -- starts api/io server
+npm run client - runs client (open two browsers as an example simulation)
 
-npm start - starts dev server
+npm run server - runs api endpoints/websocket
