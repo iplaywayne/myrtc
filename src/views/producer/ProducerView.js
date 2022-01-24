@@ -17,7 +17,7 @@ export default function ProducerView() {
     socket.emit('producer', body)
     socket.on('consumer', payload => {
       startProducing()
-      console.log('incoming consumer', payload)
+      // console.log('incoming consumer', payload)
     })
     socket.on('candidate', payload => {
       onCandidate(payload)
@@ -81,6 +81,7 @@ export default function ProducerView() {
   return (
     <div>
       <video
+        role='producer-video'
         ref={localVideo}
         autoPlay playsInline
         style={{ backgroundColor: 'black', width: '100%', height: '100vh' }} />

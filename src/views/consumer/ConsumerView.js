@@ -3,7 +3,6 @@ import axios from 'axios'
 import { socket } from '../../Socket'
 import { iceConfig } from '../../config/iceConfig'
 import { CONSUMER, PRODUCER, CANDIDATE } from '../../config/Events'
-import makeConsumer from '../../factory/makeConsumer'
 
 
 let pc
@@ -12,28 +11,17 @@ export default function ConsumerView() {
   const body = { room: 'myrtc' }
 
   React.useEffect(() => {
+    socket.removeAllListeners()
+    startConsuming()
 
-    makeConsumer({
-      socket, body,
-      onProducer: payload => {
-        startConsuming()
-      },
-      onCandidate: payload => {
-        onCandidate(payload)
-      }
-    }).then(() => startConsuming())
-
-    // socket.removeAllListeners()
-    // startConsuming()
-
-    // socket.emit(CONSUMER, body)
-    // socket.on(PRODUCER, payload => {
-    //   startConsuming()
-    //   console.log('incoming producer', payload)
-    // })
-    // socket.on(CANDIDATE, payload => {
-    //   onCandidate(payload)
-    // })
+    socket.emit(CONSUMER, body)
+    socket.on(PRODUCER, payload => {
+      startConsuming()
+      // console.log('incoming producer', payload)
+    })
+    socket.on(CANDIDATE, payload => {
+      onCandidate(payload)
+    })
   }, [])
 
 
@@ -88,6 +76,7 @@ export default function ConsumerView() {
   return (
     <div>
       <video
+        role='consumer-video'
         ref={remoteVideo}
         autoPlay playsInline muted
         style={{ backgroundColor: 'black', width: '100%', height: '100vh' }} />
